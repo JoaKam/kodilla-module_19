@@ -3,6 +3,7 @@ package com.crud.tasks.controller;
 import com.crud.tasks.domain.CreatedTrelloCard;
 import com.crud.tasks.domain.TrelloBoardDto;
 import com.crud.tasks.domain.TrelloCardDto;
+import com.crud.tasks.service.TrelloService;
 import com.crud.tasks.trello.client.TrelloClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +16,12 @@ import java.util.List;
 public class TrelloController {
 
     @Autowired
-    private TrelloClient trelloClient;
+    private TrelloService trelloService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "getFilteredTrelloBoards")
+    @RequestMapping(method = RequestMethod.GET, value = "/getFilteredTrelloBoards")
     public void getFilteredTrelloBoards() {
 
-        List<TrelloBoardDto> trelloBoards = trelloClient.getTrelloBoards();
+        List<TrelloBoardDto> trelloBoards = trelloService.fetchTrelloBoards();
 
         trelloBoards.stream()
                 .filter(trelloBoardDto -> trelloBoardDto.getId() != null)
@@ -31,15 +32,15 @@ public class TrelloController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "getTrelloBoards")
+    @RequestMapping(method = RequestMethod.GET, value = "/getTrelloBoards")
     public List<TrelloBoardDto> getTrelloBoards() {
-        return trelloClient.getTrelloBoards();
+        return trelloService.fetchTrelloBoards();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "getAllTrelloBoards")
+    @RequestMapping(method = RequestMethod.GET, value = "/getAllTrelloBoards")
     public void getAllTrelloBoards() {
 
-        List<TrelloBoardDto> trelloBoards = trelloClient.getTrelloBoards();
+        List<TrelloBoardDto> trelloBoards = trelloService.fetchTrelloBoards();
 
         trelloBoards.forEach(trelloBoardDto -> {
             System.out.println(trelloBoardDto.getName() + " - " + trelloBoardDto.getId());
@@ -50,8 +51,8 @@ public class TrelloController {
         });
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "createdTrelloCard")
+    @RequestMapping(method = RequestMethod.POST, value = "/createdTrelloCard")
     public CreatedTrelloCard createdTrelloCard(@RequestBody TrelloCardDto trelloCardDto) {
-        return trelloClient.createNewCard(trelloCardDto);
+        return trelloService.createTrelloCard(trelloCardDto);
     }
 }
